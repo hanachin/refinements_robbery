@@ -1,9 +1,17 @@
-RSpec.describe RefinementsRobbery do
-  it "has a version number" do
-    expect(RefinementsRobbery::VERSION).not_to be nil
-  end
+class C
+  using Module.new { refine(C) { def c; end } }
+end
 
-  it "does something useful" do
-    expect(false).to eq(true)
+RSpec.describe RefinementsRobbery do
+  specify do
+    expect { C.new.c }.to raise_error(NoMethodError)
+  end
+end
+
+using *RefinementsRobbery.rob(C)
+
+RSpec.describe RefinementsRobbery do
+  specify do
+    expect { C.new.c }.not_to raise_error
   end
 end
